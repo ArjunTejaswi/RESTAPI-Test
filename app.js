@@ -3,6 +3,7 @@ const app = express() //for executing express as a fn
 const productRoutes = require('./api/routes/products')
 const orderRoutes = require('./api/routes/orders')
 const categoryRoutes = require('./api/routes/category')
+const authorRoutes = require('./api/routes/author')
 const morgan = require('morgan')
 const bodyParser =  require('body-parser')
 const mongoose = require('mongoose')
@@ -28,6 +29,7 @@ app.use((req,res,next) => {
 app.use('/products',productRoutes)  //product routes is handler
 app.use('/orders',orderRoutes)
 app.use('/category',categoryRoutes)
+app.use('/author',authorRoutes)
 
 mongoose.connect(
   'mongodb://localhost:27017/restapi',{

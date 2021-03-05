@@ -15,6 +15,7 @@ Category.find( function (err, category) {
 
 router.post('/', (req,res,next) => {
     const category = new Category({
+        categoryName:req.body.categoryName,
         authorName: req.body.authorName,
     })
     category.save(function (err, category) {
@@ -26,11 +27,13 @@ router.post('/', (req,res,next) => {
     })
 })
 
-router.post('/:id', (req,res,next) => {
-    const category = new Category({
+router.put ('/:id', (req,res,next) => {
+    const category = {
+        categoryName:req.body.categoryName,
         authorName: req.body.authorName,
-    })
-    Category.updateOne({_id:req.params.id},{authorName:category.authorName},function (err, category) {
+    }
+    console.log(req.params.id)
+    Category.updateOne({_id:req.params.id},category,function (err, category) {
         if (err){
             res.status(204).json({message:"Something went wrong"})
         }else{
@@ -40,9 +43,10 @@ router.post('/:id', (req,res,next) => {
 })
 
 router.delete('/:id', (req,res,next) => {
-    const category = new Category({
-        authorName: req.body.authorName,
-    })
+    // const category = {
+    //     categoryName:req.body.categoryName,
+    //     authorName: req.body.authorName,
+    // }
     Category.deleteOne({_id:req.params.id},function (err, category) {
         if (err){
             res.status(204).json({message:"Something went wrong"})
@@ -51,4 +55,5 @@ router.delete('/:id', (req,res,next) => {
         }
     })
 })
+
 module.exports = router
