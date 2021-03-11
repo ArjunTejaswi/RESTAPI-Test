@@ -5,6 +5,7 @@ const orderRoutes = require('./api/routes/orders')
 const categoryRoutes = require('./api/routes/category')
 const authorRoutes = require('./api/routes/author')
 const postRoutes = require('./api/routes/post')
+const userRoutes = require('./api/routes/user')
 const morgan = require('morgan')
 const bodyParser =  require('body-parser')
 const mongoose = require('mongoose')
@@ -32,6 +33,7 @@ app.use('/orders',orderRoutes)
 app.use('/category',categoryRoutes)
 app.use('/author',authorRoutes)
 app.use('/posts',postRoutes)
+app.use('/users',userRoutes)
 
 mongoose.connect(
   'mongodb://localhost:27017/restapi',{

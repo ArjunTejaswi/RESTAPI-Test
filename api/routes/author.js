@@ -6,8 +6,8 @@ const Category = require('../models/Category')
 const Author = require('../models/Author')
 const Post = require('../models/Post')
 
-router.get('/', (req,res,next) => {
-    Author.find({status:true}, function (err, author) {
+router.get('/', auth.authenticated,(req,res,next) => {
+    Author.find({status:true,deleted:false}, function (err, author) {
         if (err){
             res.status(204).json({message:"Something went wrong"})
         }else{
@@ -16,7 +16,7 @@ router.get('/', (req,res,next) => {
     })
 })
 
-router.post('/', async (req,res,next) => {
+router.post('/', auth.authenticated,async (req,res,next) => {
     let a = await Author.findOne({blogName:req.body.blogName})
     if (!a) {
         const author = new Author({
@@ -41,7 +41,7 @@ router.post('/', async (req,res,next) => {
     }
 })
 
-router.post('/:id/activate', (req,res,next) => {
+router.post('/:id/activate', auth.authenticated,(req,res,next) => {
     Author.updateOne({_id:req.params.id},{status:true},function (err, author) {
         if (err){
             res.status(204).json({message:"Something went wrong"})
@@ -51,7 +51,7 @@ router.post('/:id/activate', (req,res,next) => {
     })
 })
 
-router.post('/:id/deactivate', (req,res,next) => {
+router.post('/:id/deactivate', auth.authenticated,(req,res,next) => {
     Author.updateOne({_id:req.params.id},{status:false},function (err, author) {
         if (err){
             res.status(204).json({message:"Something went wrong"})
@@ -61,16 +61,12 @@ router.post('/:id/deactivate', (req,res,next) => {
     })
 })
 
-router.put ('/:id', async (req,res,next) => {
+router.patch('/:id', auth.authenticated,async (req,res,next) => {
     const author = {
         authorName: req.body.authorName,
         blogName:req.body.blogName,
-        categoryName:req.body.categoryName,
-        categoryId:req.body.categoryId
     }
-    await Category.updateMany({_id:author.categoryId},{authorName:author.authorName})
-    await Post.updateMany({categoryId:author.categoryId},{authorName:author.authorName})
-        await Author.updateMany({categoryId:author.categoryId},author,async function (err, author) {
+        await Author.updateOne({ _id:req.params.id },author,async function (err, author) {
         if (err){
             res.status(204).json({message:"Something went wrong"})
         }else{
@@ -79,8 +75,8 @@ router.put ('/:id', async (req,res,next) => {
     })
 })
 
-router.delete('/:id', (req,res,next) => {
-    Author.deleteOne({_id:req.params.id},function (err, author) {
+router.delete('/:id', auth.authenticated,(req,res,next) => {
+    Author.updateOne({_id:req.params.id},{deleted:true},function (err, author) {
         if (err){
             res.status(204).json({message:"Something went wrong"})
         }else{

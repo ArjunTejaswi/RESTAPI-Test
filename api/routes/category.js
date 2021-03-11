@@ -1,13 +1,11 @@
 const express =  require('express')
 //for handling more routes
 const router = express.Router()
-const mongoose = require('mongoose')
 const Category = require('../models/Category')
-const Author = require('../models/Author')
-const Post = require('../models/Post')
+const auth = require('../config/authService')
 
-router.get('/', (req,res,next) => {
-    Category.find({status:true}, function (err, category) {
+router.get('/', auth.authenticated,(req,res,next) => {
+    Category.find({status:true,deleted:false}, function (err, category) {
     if (err){
         res.status(204).json({message:"Something went wrong"})
     }else{
@@ -16,15 +14,15 @@ router.get('/', (req,res,next) => {
 })
 })
 
-router.post('/', async (req,res,next) => {
+router.post('/', auth.authenticated,async (req,res,next) => {
     let a = await Category.findOne({categoryName:req.body.categoryName})
     // console.log(a)
     if (!a) {
         const category = new Category({
             categoryName: req.body.categoryName,
-            authorName: req.body.authorName,
+            // authorName: req.body.authorName,
         })
-        if (!category.categoryName || !category.authorName){
+        if (!category.categoryName){
             res.status(200).json({message:"You have missed either categoryName or authorName"})
         }else {
             category.save(function (err, category) {
@@ -40,7 +38,7 @@ router.post('/', async (req,res,next) => {
     }
 })
 
-router.post('/:id/activate', (req,res,next) => {
+router.post('/:id/activate', auth.authenticated,(req,res,next) => {
     Category.updateOne({_id:req.params.id},{status:true},function (err, category) {
         if (err){
             res.status(204).json({message:"Something went wrong"})
@@ -50,7 +48,7 @@ router.post('/:id/activate', (req,res,next) => {
     })
 })
 
-router.post('/:id/deactivate', (req,res,next) => {
+router.post('/:id/deactivate', auth.authenticated,(req,res,next) => {
     Category.updateOne({_id:req.params.id},{status:false},function (err, category) {
         if (err){
             res.status(204).json({message:"Something went wrong"})
@@ -60,12 +58,11 @@ router.post('/:id/deactivate', (req,res,next) => {
     })
 })
 
-router.put ('/:id', async (req,res,next) => {
+router.patch('/:id', auth.authenticated,async (req,res,next) => {
     const category = {
         categoryName:req.body.categoryName,
-        authorName: req.body.authorName,
     }
-    await Category.updateOne({_id:req.params.id},category,function (err, category) {
+     Category.updateOne({ _id: req.params.id },category,function (err, category) {
         if (err){
             res.status(204).json({message:"Something went wrong"})
         }else{
@@ -74,12 +71,12 @@ router.put ('/:id', async (req,res,next) => {
     })
 })
 
-router.delete('/:id', (req,res,next) => {
+router.delete('/:id', auth.authenticated,(req,res,next) => {
     // const category = {
     //     categoryName:req.body.categoryName,
     //     authorName: req.body.authorName,
     // }
-    Category.deleteOne({_id:req.params.id},function (err, category) {
+    Category.updateOne({_id:req.params.id},{deleted:true},function (err, category) {
         if (err){
             res.status(204).json({message:"Something went wrong"})
         }else{
