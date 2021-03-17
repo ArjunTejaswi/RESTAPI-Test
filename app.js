@@ -1,7 +1,5 @@
 const express = require('express')
 const app = express() //for executing express as a fn
-const productRoutes = require('./api/controllers/products')
-const orderRoutes = require('./api/controllers/orders')
 const categoryRoutes = require('./api/controllers/category')
 const authorRoutes = require('./api/controllers/author')
 const postRoutes = require('./api/controllers/post')
@@ -28,8 +26,6 @@ app.use((req,res,next) => {
 
 //utility method
 //incoming req has to go through app.use
-app.use('/products',productRoutes)  //product controllers is handler
-app.use('/orders',orderRoutes)
 app.use('/category',categoryRoutes)
 app.use('/author',authorRoutes)
 app.use('/posts',postRoutes)
