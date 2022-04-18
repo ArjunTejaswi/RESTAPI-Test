@@ -47,21 +47,17 @@ router.post('/login', async (req,res,next) => {
     }
 })
 
-router.post('/', async (req,res,next) => {
+router.post('/register', async (req,res,next) => {
     let a = await User.findOne({email:req.body.email})
     if (!a) {
-        const user = new User(req.body)
-        if (!req.body.fullName || !req.body.email || !req.body.password){
-            res.status(200).json({message:"You have missed some detail!!"})
-        }else {
-            user.save(function (err, user) {
-                if (err) {
-                    res.status(204).json({message: "Something went wrong"})
-                } else {
-                    res.status(200).json({message: "ALL OK!!", data: user})
-                }
-            })
-        }
+        const user = new User(req.body)      
+        user.save(function (err, user) {
+            if (err) {
+                res.status(204).json({message: err})
+            } else {
+                res.status(200).json({message: "ALL OK!!", data: user})
+            }
+        })
     }else {
         res.status(200).json({message:"This User already exists"})
     }

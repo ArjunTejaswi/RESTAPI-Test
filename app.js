@@ -26,6 +26,9 @@ app.use((req,res,next) => {
 
 //utility method
 //incoming req has to go through app.use
+app.get('/', (req,res,next)=>{
+  return res.status(200).json({ status: true, message: 'Welcome to Nodejs' })
+})
 app.use('/category',categoryRoutes)
 app.use('/author',authorRoutes)
 app.use('/posts',postRoutes)

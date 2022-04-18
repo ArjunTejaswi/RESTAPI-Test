@@ -12,7 +12,7 @@ module.exports.authenticated =  (req, res, next) => {
             req.decoded = decoded
             User.findOne({ email: decoded.email, deleted: false}, function(err, user){
                 if(err){
-                    return res.status(401).json({ status: false, message: 'Unauthorized access.' })
+                    return res.status(401).json({ status: false, message: err })
                 }
                 if (user) {
                     let currentUser
@@ -25,8 +25,6 @@ module.exports.authenticated =  (req, res, next) => {
                     }
                     req.user = currentUser
                     next()
-                } else {
-                    return res.status(401).json({ success: false, message: 'Unauthorized access.' })
                 }
             })
         })

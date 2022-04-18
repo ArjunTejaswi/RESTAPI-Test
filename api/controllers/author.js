@@ -5,6 +5,7 @@ const mongoose = require('mongoose')
 const Category = require('../models/Category')
 const Author = require('../models/Author')
 const Post = require('../models/Post')
+const auth = require('../config/authService')
 
 router.get('/', auth.authenticated,(req,res,next) => {
     Author.find({status:true,deleted:false}, function (err, author) {
