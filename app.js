@@ -35,10 +35,15 @@ app.use('/posts',postRoutes)
 app.use('/users',userRoutes)
 
 mongoose.connect(
-  'mongodb://localhost:27017/restapi',{
+  'mongodb://Arjun:Admin123@13.232.40.252:27017/rest-api',{
     useUnifiedTopology: true,
     useNewUrlParser: true
   })
+  // .then(result =>{
+  //   console.log(result)
+  // }).catch(err =>{
+  //   console.log("ERR",err)
+  // })
 mongoose.Promise = global.Promise
 //for error handling
 app.use((req,res,next) => {
