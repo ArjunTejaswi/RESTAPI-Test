@@ -4,8 +4,8 @@ phases:
  commands:
  — echo Logging in to Amazon ECR…
  — aws — version
- — $(aws ecr get-login — region ap-south-1 — no-include-email)
- — REPOSITORY_URI="ECR REPO URL"
+ — $(aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 475750150827.dkr.ecr.ap-south-1.amazonaws.com)
+ — REPOSITORY_URI=475750150827.dkr.ecr.ap-south-1.amazonaws.com/rest-apis
  — COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1–7)
  — IMAGE_TAG=build-$(echo $CODEBUILD_BUILD_ID | awk -F”:” ‘{print $2}’)
  build:
@@ -21,7 +21,7 @@ phases:
  — docker push $REPOSITORY_URI:latest
  — docker push $REPOSITORY_URI:$IMAGE_TAG
  — echo Writing image definitions file…
- — printf ‘[{“name”:”CONTAINER-NAME”,”imageUri”:”%s”}]’ $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+ — printf ‘[{“name”:”rest-api”,”imageUri”:”%s”}]’ $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
  — cat imagedefinitions.json 
 artifacts:
  files: imagedefinitions.json
